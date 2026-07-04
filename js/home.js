@@ -226,8 +226,8 @@
                       const myPetObj = myDogs.find(d => d.name === myPet);
                       const followerId = myPetObj ? myPetObj.id : userId;
                       const newFollow = await window.PawvlogAPI.followPet(followerId, targetPet);
-                      
-                      if(newFollow && newFollow._id) {
+
+                      if (newFollow && newFollow._id) {
                         globalInteractions.push(newFollow);
                       }
                       e.target.textContent = 'Siguiendo ✓';
@@ -353,9 +353,9 @@
             e.target.textContent = 'Siguiendo...';
             const followerId = myPetObj ? myPetObj.id : localStorage.getItem('pawvlog_user_id');
             const newFollow = await window.PawvlogAPI.followPet(followerId, targetPet);
-            
+
             // Optimistic Update
-            if(newFollow && newFollow._id) {
+            if (newFollow && newFollow._id) {
               globalInteractions.push(newFollow);
               e.target.dataset.interactionid = newFollow._id;
             }
@@ -832,8 +832,8 @@
         e.target.textContent = 'Siguiendo...';
         const followerId = myPetObj ? myPetObj.id : localStorage.getItem('pawvlog_user_id');
         const newFollow = await window.PawvlogAPI.followPet(followerId, targetPet);
-        
-        if(newFollow && newFollow._id) {
+
+        if (newFollow && newFollow._id) {
           globalInteractions.push(newFollow);
         }
         e.target.textContent = 'Siguiendo ✓';

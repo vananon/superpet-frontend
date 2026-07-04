@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawvlog by Superpet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+
+<body>
+
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="paw" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="66" rx="27" ry="23" />
+      <circle cx="19" cy="36" r="13" />
+      <circle cx="42" cy="17" r="12.5" />
+      <circle cx="65" cy="17" r="12.5" />
+      <circle cx="86" cy="38" r="13" />
+    </symbol>
+  </svg>
+
+  <header>
+    <nav>
+      <div class="logo">
+        <svg class="mark" viewBox="0 0 100 100">
+          <use href="#paw" fill="currentColor" />
+        </svg>
+        <span>Pawvlog <em>by Superpet</em></span>
+      </div>
+      <div class="nav-links hide-mobile">
+        <a href="#producto">Producto</a>
+        <a href="#comunidad">Comunidad</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#precios">Precios</a>
+      </div>
+      <div class="nav-actions">
+        <a href="pawvlog-login.html" class="btn-ghost hide-mobile">Iniciar sesión</a>
+        <a href="pawvlog-register.html" class="btn btn-primary">Únete a la manada</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow"><svg class="paw" viewBox="0 0 100 100">
+            <use href="#paw" />
+          </svg> Una red de Superpet</div>
+        <h1 class="hero-title">Cada paseo, siesta y<br>zoomie, <span class="accent">registrado</span>.</h1>
+        <p class="hero-sub">Pawvlog es el diario social para tus perros. Sube fotos, cuenta anécdotas y etiqueta a cada
+          uno de tus peludos para que su historia quede completa.</p>
+        <div class="hero-ctas">
+          <a href="pawvlog-register.html" class="btn btn-primary">Crear mi Pawvlog gratis</a>
+          <a href="#feed-demo" class="btn btn-outline">Ver el feed en vivo</a>
+        </div>
+        <div class="hero-proof">
+          <div class="stack-avatars">
+            <div class="av" style="background:#D7301C">Y</div>
+            <div class="av" style="background:#A11F0E">S</div>
+            <div class="av" style="background:#EA5B41">T</div>
+            <div class="av" style="background:#7A1608">G</div>
+          </div>
+          <p><strong>12,400 perritos</strong> ya tienen su propio feed</p>
+        </div>
+      </div>
+
+      <div class="mock-wrap">
+        <div class="stamp">
+          <svg viewBox="0 0 100 100">
+            <path id="stampCircle" fill="none" d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
+            <text font-family="JetBrains Mono" font-size="8" font-weight="600" letter-spacing="1.5" fill="white">
+              <textPath href="#stampCircle" startOffset="0%">GOOD BOY APPROVED • PAWVLOG • </textPath>
+            </text>
+          </svg>
+          <svg class="stamp-paw" style="position:absolute; top:44px; left:44px;" viewBox="0 0 100 100">
+            <use href="#paw" fill="currentColor" />
+          </svg>
+        </div>
+        <div class="phone">
+          <div class="phone-top">
+            <span class="t">Pawvlog</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.6" y2="16.6" />
+            </svg>
+          </div>
+          <div class="phone-body">
+            <div class="p-card">
+              <div class="p-head">
+                <div class="p-av" style="background:#F4C77A"></div>
+                <div>
+                  <div class="p-name">Yuna</div>
+                  <div class="p-tag">#Yuna · Shiba Inu</div>
+                </div>
+              </div>
+              <div class="p-photo">
+                <svg viewBox="0 0 100 100">
+                  <use href="#paw" fill="currentColor" />
+                </svg>
+              </div>
+              <div class="p-text">Domingo de siesta al sol. El mejor día de la semana 🌞</div>
+              <div class="p-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 01-8.5 8.5 8.5 8.5 0 01-4-1l-4.5 1 1-4.5a8.5 8.5 0 1116-4z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+                </svg>
+              </div>
+            </div>
+            <div class="p-card">
+              <div class="p-head">
+                <div class="p-av" style="background:#C9DDF0"></div>
+                <div>
+                  <div class="p-name">Sky</div>
+                  <div class="p-tag">#Sky · Border Collie</div>
+                </div>
+              </div>
+              <div class="p-text">Volando por el parque esta tarde 🐾</div>
+              <div class="p-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 000-7.6z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 01-8.5 8.5 8.5 8.5 0 01-4-1l-4.5 1 1-4.5a8.5 8.5 0 1116-4z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="band">
+    <div class="band-inner">
+      <div class="band-item"><b>12,400</b><span>perros con perfil</span></div>
+      <div class="band-item"><b>3,180</b><span>manadas activas</span></div>
+      <div class="band-item"><b>58,900</b><span>posts publicados</span></div>
+      <div class="band-item"><b>4.9★</b><span>en la App Store</span></div>
+    </div>
+  </div>
+
+  <section class="section" id="producto">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker"><svg class="paw" viewBox="0 0 100 100">
+            <use href="#paw" />
+          </svg> Producto</div>
+        <h2>Todo lo que tu perro haría en Instagram, si supiera escribir.</h2>
+        <p>Pawvlog está hecho para dueños con uno o varios perros: cada publicación se etiqueta al peludo correcto, sin
+          confundir feeds.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="15" rx="2" />
+              <path d="M3 9h18" />
+              <path d="M8 3v4M16 3v4" />
+              <circle cx="12" cy="14" r="3" />
+            </svg>
+          </div>
+          <h3>Fotos y comentarios</h3>
+          <p>Sube una foto, escribe un comentario, o ambos. Cada post captura el momento tal cual pasó.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <use href="#paw" />
+            </svg>
+          </div>
+          <h3>Etiqueta a cada perrito</h3>
+          <p>¿Tienes más de un perro? Añade a Yuna, Sky o quien sea como tag en cada publicación, sin mezclar sus
+            historias.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="21" y1="21" x2="16.6" y2="16.6" />
+            </svg>
+          </div>
+          <h3>Descubre manadas</h3>
+          <p>Explora por raza, ciudad o intereses: friendly, exploring, napping. Sigue a los perros que te alegran el
+            día.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section how" id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker"><svg class="paw" viewBox="0 0 100 100">
+            <use href="#paw" />
+          </svg> Cómo funciona</div>
+        <h2>De la correa al feed en tres pasos.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Crea el perfil de tu perro</h3>
+          <p>Nombre, raza y una foto de portada. Puedes añadir todos los perros que tengas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Publica el momento</h3>
+          <p>Sube una foto, escribe qué pasó, y etiqueta al perro (o perros) protagonistas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Comparte con la manada</h3>
+          <p>Tus seguidores reaccionan, comentan y guardan los posts que más les gustan.</p>
+        </div>
+      </div>
+      <div class="paw-trail">
+        <svg viewBox="0 0 100 100">
+          <use href="#paw" />
+        </svg>
+        <svg viewBox="0 0 100 100">
+          <use href="#paw" />
+        </svg>
+        <svg viewBox="0 0 100 100">
+          <use href="#paw" />
+        </svg>
+        <svg viewBox="0 0 100 100">
+          <use href="#paw" />
+        </svg>
+        <svg viewBox="0 0 100 100">
+          <use href="#paw" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="comunidad">
+    <div class="wrap tagshow">
+      <div class="tagshow-copy">
+        <div class="kicker"><svg class="paw" viewBox="0 0 100 100">
+            <use href="#paw" />
+          </svg> Multi-perro</div>
+        <h2>Una cuenta. Todos tus perros, cada uno con su historia.</h2>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M20 6L9 17l-5-5" />
+            </svg> Añade cada perro como un tag propio, con su nombre y raza.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M20 6L9 17l-5-5" />
+            </svg> Filtra el feed de tu perfil por perrito.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M20 6L9 17l-5-5" />
+            </svg> Los seguidores pueden seguir a un perro específico, no solo a ti.</li>
+        </ul>
+        <a href="pawvlog-register.html" class="btn btn-primary" style="margin-top:28px;">Configura tu manada</a>
+      </div>
+      <div class="tagshow-visual">
+        <div class="cloud">
+          <span class="dogtag"><span class="dot" style="background:#D7301C"></span>Yuna</span>
+          <span class="dogtag"><span class="dot" style="background:#C9DDF0"></span>Sky</span>
+          <span class="dogtag"><span class="dot" style="background:#F4C77A"></span>Thea</span>
+          <span class="dogtag"><span class="dot" style="background:#7A1608"></span>Gibby</span>
+          <span class="dogtag"><span class="dot" style="background:#EA5B41"></span>+ Añadir perro</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="feed-demo" style="padding-top:0;">
+    <div class="cta-band" style="--paw-pattern:none;">
+      <h2>Empieza el pawvlog de tu perro hoy.</h2>
+      <p>Gratis, sin anuncios de por medio, y con todo el rojo de Superpet que se merece.</p>
+      <a href="pawvlog-register.html" class="btn btn-primary">Crear mi cuenta</a>
+    </div>
+  </section>
+
+  <footer id="precios">
+    <div class="foot-inner">
+      <div class="logo">
+        <svg class="mark" viewBox="0 0 100 100" style="width:26px;height:26px;">
+          <use href="#paw" fill="currentColor" />
+        </svg>
+        <span style="font-size:1.05rem;">Pawvlog <em>by Superpet</em></span>
+      </div>
+      <div class="foot-links">
+        <a href="#producto">Producto</a>
+        <a href="#comunidad">Comunidad</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#">Soporte</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="mono small">© 2026 SUPERPET INC.</span>
+      <span class="mono small">HECHO PARA PERROS, OPERADO POR HUMANOS</span>
+    </div>
+  </footer>
+
+</body>
+
+</html>

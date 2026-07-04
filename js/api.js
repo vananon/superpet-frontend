@@ -1,4 +1,3 @@
-// const API_BASE_URL is now defined in config.js
 
 async function fetchAPI(endpoint, options = {}) {
   const token = localStorage.getItem('pawvlog_token');
@@ -36,7 +35,7 @@ async function checkUserExists(username) {
 async function loginUser(identifier, password) {
   const isEmail = identifier.includes('@');
   const payload = { password };
-  
+
   if (isEmail) {
     payload.email = identifier;
   } else {

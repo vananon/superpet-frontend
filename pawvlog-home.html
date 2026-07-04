@@ -124,14 +124,14 @@
 
           <div class="tag-row" id="tagRow">
             <span class="label">Etiquetar:</span>
-            <button class="pet-chip" data-pet="Yuna" data-color="var(--pet-1)"><span class="dot"
-                style="background:var(--pet-1)"></span>Yuna</button>
-            <button class="pet-chip" data-pet="Sky" data-color="var(--pet-2)"><span class="dot"
-                style="background:var(--pet-2)"></span>Sky</button>
-            <button class="pet-chip" data-pet="Thea" data-color="var(--pet-3)"><span class="dot"
-                style="background:var(--pet-3)"></span>Thea</button>
-            <button class="pet-chip" data-pet="Gibby" data-color="var(--pet-4)"><span class="dot"
-                style="background:var(--pet-4)"></span>Gibby</button>
+            <button class="pet-chip" data-pet="Yuna" data-color="#F4C77A"><span class="dot"
+                style="background:#F4C77A"></span>Yuna</button>
+            <button class="pet-chip" data-pet="Sky" data-color="#C9DDF0"><span class="dot"
+                style="background:#C9DDF0"></span>Sky</button>
+            <button class="pet-chip" data-pet="Thea" data-color="#D7301C"><span class="dot"
+                style="background:#D7301C"></span>Thea</button>
+            <button class="pet-chip" data-pet="Gibby" data-color="#7A1608"><span class="dot"
+                style="background:#7A1608"></span>Gibby</button>
           </div>
 
           <div class="composer-actions">
@@ -155,12 +155,8 @@
       </div>
 
       <div id="profileView" style="display:none;">
-        <!-- Grid view for dogs -->
         <div id="profileList" class="profile-list">
-          <!-- populated by js -->
         </div>
-
-        <!-- Detail view for a single dog -->
         <div id="dogDetail" class="dog-detail" style="display:none;">
           <button class="back-btn" id="backToProfileList">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -169,17 +165,12 @@
             Volver a mis perritos
           </button>
           <div class="dog-detail-card" id="dogDetailCard">
-            <!-- populated by js -->
           </div>
         </div>
       </div>
-
-      <!-- Notifications View -->
       <div id="notificationsView" class="generic-view" style="display:none;">
         <div id="notificationsList"></div>
       </div>
-
-      <!-- Search View -->
       <div id="searchView" class="generic-view" style="display:none;">
         <div class="search-hero">
           <div class="search-box-large">
@@ -192,13 +183,9 @@
         </div>
         <div id="searchResults"></div>
       </div>
-
-      <!-- Messaging View -->
       <div id="messagingView" class="generic-view" style="display:none;">
         <div id="chatList"></div>
       </div>
-
-      <!-- Settings View -->
       <div id="settingsView" class="generic-view" style="display:none;">
         <div class="settings-panel">
           <h3>Ajustes de la cuenta</h3>
@@ -253,7 +240,7 @@
       <div class="panel">
         <h4>Manadas sugeridas</h4>
         <div class="pack">
-          <div class="av" style="background:var(--pet-3)">M</div>
+          <div class="av" style="background:#D7301C">M</div>
           <div class="info">
             <div class="n">Milo</div>
             <div class="b">Golden Retriever</div>
@@ -261,7 +248,7 @@
           <button class="btn-follow-suggested" data-target="Milo">Seguir</button>
         </div>
         <div class="pack">
-          <div class="av" style="background:var(--pet-7)">P</div>
+          <div class="av" style="background:#A11F0E">P</div>
           <div class="info">
             <div class="n">Pepper</div>
             <div class="b">Dachshund</div>
@@ -269,7 +256,7 @@
           <button class="btn-follow-suggested" data-target="Pepper">Seguir</button>
         </div>
         <div class="pack">
-          <div class="av" style="background:var(--pet-5)">N</div>
+          <div class="av" style="background:#EA5B41">N</div>
           <div class="info">
             <div class="n">Nube</div>
             <div class="b">Poodle</div>
@@ -281,7 +268,6 @@
 
   </div>
 
-  <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/home.js"></script>
 

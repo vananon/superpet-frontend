@@ -58,7 +58,6 @@
     </div>
   </div>
 
-  <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script>
     document.querySelector('form').addEventListener('submit', async (e) => {
@@ -67,8 +66,6 @@
       const email = usernameInput.value;
       const pass = document.getElementById('password').value;
       const btn = e.target.querySelector('button');
-
-      // Clear previous errors
       const existingError = document.getElementById('login-error');
       if (existingError) existingError.remove();
 
@@ -77,16 +74,14 @@
 
       try {
         if (window.PawvlogAPI) {
-          // Realizamos directamente el inicio de sesión vía API
-        const res = await window.PawvlogAPI.loginUser(email, pass);
-        // Si hay token, lo guardamos y redirigimos
-        if (res && res.token) {
-          localStorage.setItem('pawvlog_token', res.token);
-          if (res.user && res.user._id) {
-            localStorage.setItem('pawvlog_user_id', res.user._id);
-          }
-          window.location.href = 'pawvlog-home.html';
-        } else {
+          const res = await window.PawvlogAPI.loginUser(email, pass);
+          if (res && res.token) {
+            localStorage.setItem('pawvlog_token', res.token);
+            if (res.user && res.user._id) {
+              localStorage.setItem('pawvlog_user_id', res.user._id);
+            }
+            window.location.href = 'pawvlog-home.html';
+          } else {
             throw new Error(res.message || 'No se ha podido iniciar sesión. Usuario y/o contraseña inválidos.');
           }
         } else {
@@ -100,8 +95,6 @@
         errorMsg.style.fontSize = '0.9rem';
         errorMsg.style.marginTop = '12px';
         errorMsg.style.textAlign = 'center';
-
-        // Mostrar el error de la API si existe, de lo contrario mostrar el mensaje predeterminado
         errorMsg.textContent = 'No se ha podido iniciar sesión. Usuario y/o contraseña inválidos.';
         btn.parentElement.appendChild(errorMsg);
 
