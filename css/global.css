@@ -1,0 +1,42 @@
+:root{
+  --red:#D7301C;
+  --red-dark:#A11F0E;
+  --red-deep:#7A1608;
+  --red-tint:#FDEEEA;
+  --red-tint-2:#FBD9CF;
+  --white:#FFFFFF;
+  --ink:#20130F;
+  --ink-soft:#8A716B;
+  --ink-faint:#B7A29C;
+  --line:#F1DCD4;
+  --sidebar-bg:#FFF6F4;
+  --radius:22px;
+  
+  /* Pet & Avatar Colors */
+  --pet-1: #F4C77A;
+  --pet-2: #C9DDF0;
+  --pet-3: var(--red);
+  --pet-4: var(--red-deep);
+  --pet-5: #EA5B41;
+  --pet-6: #4CAF50;
+  --pet-7: var(--red-dark);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
+body{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  color:var(--ink);
+  background:var(--white);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.display{font-family:'Fredoka', sans-serif;}
+.mono{font-family:'JetBrains Mono', monospace; letter-spacing:0.04em;}
+button{font-family:inherit; cursor:pointer;}
+input,textarea{font-family:inherit;}
+a{color:inherit; text-decoration:none;}
+img,svg{display:block;}
+:focus-visible{outline:3px solid var(--red-dark); outline-offset:2px;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+.paw{fill:currentColor;}
