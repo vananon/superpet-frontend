@@ -1381,3 +1381,21 @@ input:checked+.slider {
 input:checked+.slider:before {
   transform: translateX(22px);
 }
+
+.comment-pet-initial {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}

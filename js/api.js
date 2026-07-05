@@ -66,6 +66,20 @@ async function updatePetBio(userId, petId, bio) {
   });
 }
 
+async function updateUser(userId, data) {
+  return fetchAPI(`/users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+async function updatePet(userId, petId, data) {
+  return fetchAPI(`/users/${userId}/pets/${petId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 
 async function getPosts() {
   return fetchAPI('/posts');
@@ -125,7 +139,7 @@ async function uploadImage(file) {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  
+
   const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
     method: 'POST',
     body: formData
@@ -146,6 +160,8 @@ window.PawvlogAPI = {
   registerUser,
   getUserProfile,
   updatePetBio,
+  updateUser,
+  updatePet,
   getPosts,
   createPost,
   likePost,

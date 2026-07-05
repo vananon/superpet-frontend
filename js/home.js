@@ -29,6 +29,7 @@
   ];
 
   let seedPosts = [];
+  let globalUserCache = {};
 
   function updatePostBtn() {
     postBtn.disabled = !(postText.value.trim().length || attachedPhoto);
@@ -116,9 +117,19 @@
 
     const isMyOwnPost = myDogs.some(d => d.name === post.name);
 
+    const userPhoto = post.user_avatar;
+    const userInitials = (post.user_handle || 'U').charAt(0).toUpperCase();
+
     el.innerHTML = `
       <div class="post-head">
-        <div class="av" style="background:${post.color}">${post.initials}</div>
+        <div class="av-wrap" style="position:relative; width:48px; height:48px; flex-shrink:0;">
+          <div class="av" style="width:100%; height:100%; border-radius:50%; background:${post.color}; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:white; font-weight:bold;">
+            ${userPhoto ? '<img src="' + userPhoto + '" style="width:100%; height:100%; object-fit:cover;">' : userInitials}
+          </div>
+          <div class="pet-initial" style="position:absolute; bottom:-4px; right:-4px; width:20px; height:20px; background:var(--red); color:white; font-size:12px; font-weight:bold; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 1px 2px rgba(0,0,0,0.1);">
+            ${post.initials}
+          </div>
+        </div>
         <div class="who">
           <div class="name" style="display:flex; align-items:center;">
             ${post.name}
@@ -209,9 +220,30 @@
               if (comments.length === 0) {
                 list.innerHTML = '<div style="padding: 10px; color: var(--ink-soft); font-size: 0.9rem;">Sé el primero en comentar.</div>';
               } else {
-                list.innerHTML = comments.map(c => `
+                await Promise.all(comments.map(async c => {
+                  let user_avatar = c.avatar_url || (c.autor && c.autor.avatar_url);
+                  let uid = c.id_usuario || (c.autor && (c.autor.usuario_handle || c.autor.handle_usuario));
+                  if (!user_avatar && uid) {
+                    if (globalUserCache[uid] === undefined) {
+                      globalUserCache[uid] = window.PawvlogAPI.getUserProfile(uid).then(prof => prof ? prof.avatar_url : null).catch(() => null);
+                    }
+                    c.avatar_url = await globalUserCache[uid];
+                    globalUserCache[uid] = c.avatar_url;
+                  }
+                }));
+                list.innerHTML = comments.map(c => {
+                  const nameLen = (c.handle_usuario || 'U').length;
+                  const bgColor = `var(--pet-${(nameLen % 7) + 1})`;
+                  return `
                   <div class="comment-item">
-                    <div class="comment-av">${(c.handle_usuario || 'U').charAt(0).toUpperCase()}</div>
+                    <div class="comment-av-wrap" style="position:relative; width:36px; height:36px; flex-shrink:0;">
+                      <div class="comment-av" style="width:100%; height:100%; border-radius:50%; background:${bgColor}; overflow:hidden; display:flex; align-items:center; justify-content:center; margin:0; color:white; font-weight:bold; font-size:1.1rem;">
+                        ${(c.avatar_url || (c.autor && c.autor.avatar_url)) ? '<img src="' + (c.avatar_url || c.autor.avatar_url) + '" style="width:100%; height:100%; object-fit:cover;">' : (c.handle_usuario || 'U').charAt(0).toUpperCase()}
+                      </div>
+                      <div class="comment-pet-initial">
+                        ${(c.nombre_mascota || (c.autor && c.autor.nombre_mascota) || 'M').charAt(0).toUpperCase()}
+                      </div>
+                    </div>
                     <div class="comment-content">
                       <div class="comment-who">
                         ${c.handle_usuario || 'Usuario'}
@@ -220,7 +252,8 @@
                       <div class="comment-text">${c.texto}</div>
                     </div>
                   </div>
-                `).join('');
+                  `;
+                }).join('');
 
                 list.querySelectorAll('.btn-follow-comment').forEach(btn => {
                   btn.addEventListener('click', async (e) => {
@@ -300,9 +333,20 @@
 
             const list = document.getElementById(`comments-list-${index}`);
             const isFirst = list.innerHTML.includes('Sé el primero');
+            const myAvatar = document.querySelector('.side-user .av img')?.src;
+            const nameLen = petName.length;
+            const bgColor = `var(--pet-${(nameLen % 7) + 1})`;
+
             const commentHtml = `
               <div class="comment-item">
-                <div class="comment-av">${petName.charAt(0).toUpperCase()}</div>
+                <div class="comment-av-wrap" style="position:relative; width:36px; height:36px; flex-shrink:0;">
+                  <div class="comment-av" style="width:100%; height:100%; border-radius:50%; background:${bgColor}; overflow:hidden; display:flex; align-items:center; justify-content:center; margin:0; color:white; font-weight:bold; font-size:1.1rem;">
+                    ${myAvatar ? '<img src="' + myAvatar + '" style="width:100%; height:100%; object-fit:cover;">' : petName.charAt(0).toUpperCase()}
+                  </div>
+                  <div class="comment-pet-initial">
+                    ${petName.charAt(0).toUpperCase()}
+                  </div>
+                </div>
                 <div class="comment-content">
                   <div class="comment-who">${petName}</div>
                   <div class="comment-text">${text}</div>
@@ -551,7 +595,7 @@
       const card = document.createElement('div');
       card.className = 'dog-card';
       card.innerHTML = `
-        <div class="av" style="background:${dog.color}">${dog.initials}</div>
+        <div class="av" style="background:${dog.color}">${dog.photo ? '<img src="' + dog.photo + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">' : dog.initials}</div>
         <div class="name">${dog.name}</div>
         <div class="breed">${dog.breed}</div>
       `;
@@ -567,10 +611,8 @@
     dogDetailCard.innerHTML = `
       <div class="dd-header">
         <div class="dd-avatar-wrap">
-          <div class="dd-avatar" style="background:${dog.color}">${dog.initials}</div>
-          <button class="change-photo-btn" title="Cambiar foto">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-          </button>
+          <div class="dd-avatar" style="background:${dog.color}">${dog.photo ? '<img src="' + dog.photo + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">' : dog.initials}</div>
+          <input type="file" id="dogPhotoInput" accept="image/*" style="display:none;">
         </div>
         <div class="dd-title">
           <h2>${dog.name}</h2>
@@ -618,6 +660,43 @@
         <div id="followingList" class="following-list" style="display:none; margin-top: 12px; max-height:200px; overflow-y:auto; border-radius:12px; background:var(--gray-light); padding:10px;"></div>
       </div>
     `;
+
+    const changeDogPhotoBtn = document.getElementById('changeDogPhotoBtn');
+    const dogPhotoInput = document.getElementById('dogPhotoInput');
+    const ddAvatar = document.querySelector('.dd-avatar');
+
+    if (changeDogPhotoBtn && dogPhotoInput) {
+      changeDogPhotoBtn.addEventListener('click', () => {
+        dogPhotoInput.click();
+      });
+
+      dogPhotoInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        changeDogPhotoBtn.disabled = true;
+        try {
+          if (window.PawvlogAPI && window.PawvlogAPI.uploadImage) {
+            const url = await window.PawvlogAPI.uploadImage(file);
+            dog.photo = url;
+            const userId = localStorage.getItem('pawvlog_user_id');
+            if (userId && window.PawvlogAPI.updatePet) {
+              try {
+                await window.PawvlogAPI.updatePet(userId, dog.id, { foto: url });
+              } catch (apiErr) { }
+            }
+            if (ddAvatar) {
+              ddAvatar.innerHTML = `<img src="${url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+              ddAvatar.style.background = 'transparent';
+            }
+          }
+        } catch (err) {
+        } finally {
+          changeDogPhotoBtn.disabled = false;
+          dogPhotoInput.value = '';
+        }
+      });
+    }
 
     const editBioBtn = document.getElementById('editBioBtn');
     const bioContent = document.getElementById('bioContent');
@@ -717,19 +796,35 @@
         }
 
         if (postsResponse && postsResponse.length > 0) {
-          seedPosts = postsResponse.map((p, i) => ({
-            _id: p._id,
-            name: (p.autor && p.autor.nombre_mascota) ? p.autor.nombre_mascota : 'Desconocido',
-            initials: (p.autor && p.autor.nombre_mascota) ? p.autor.nombre_mascota.charAt(0).toUpperCase() : '?',
-            color: petColors[i % petColors.length],
-            tags: [],
-            time: p.fecha_publicacion ? new Date(p.fecha_publicacion).toLocaleDateString() : 'ahora',
-            text: p.contenido_texto || '',
-            photo: (p.media_url && p.media_url.length > 0) ? p.media_url[0] : null,
-            likes: p.likes_count || 0,
-            comentarios_count: p.comentarios_count || 0,
-            liked: false,
-            saved: false
+          seedPosts = await Promise.all(postsResponse.map(async (p, i) => {
+            let user_avatar = p.avatar_url || (p.autor ? p.autor.avatar_url : null);
+            let user_handle = p.handle_usuario || (p.autor ? (p.autor.handle_usuario || p.autor.usuario_handle) : 'U');
+
+            if (!user_avatar && p.autor && p.autor.usuario_handle) {
+              const uid = p.autor.usuario_handle;
+              if (globalUserCache[uid] === undefined) {
+                globalUserCache[uid] = window.PawvlogAPI.getUserProfile(uid).then(prof => prof ? prof.avatar_url : null).catch(() => null);
+              }
+              user_avatar = await globalUserCache[uid];
+              globalUserCache[uid] = user_avatar;
+            }
+
+            return {
+              _id: p._id,
+              name: (p.autor && p.autor.nombre_mascota) ? p.autor.nombre_mascota : 'Desconocido',
+              initials: (p.autor && p.autor.nombre_mascota) ? p.autor.nombre_mascota.charAt(0).toUpperCase() : '?',
+              color: petColors[i % petColors.length],
+              tags: [],
+              time: p.fecha_publicacion ? new Date(p.fecha_publicacion).toLocaleDateString() : 'ahora',
+              text: p.contenido_texto || '',
+              photo: (p.media_url && p.media_url.length > 0) ? p.media_url[0] : null,
+              likes: p.likes_count || 0,
+              comentarios_count: p.comentarios_count || 0,
+              liked: false,
+              saved: false,
+              user_avatar: user_avatar,
+              user_handle: user_handle
+            };
           }));
         }
 
@@ -741,7 +836,19 @@
             const sideUserSub = document.querySelector('.side-user .sub');
             const sideUserAv = document.querySelector('.side-user .av');
             if (sideUserName) sideUserName.textContent = profile.nombre_usuario || profile.email;
-            if (sideUserAv) sideUserAv.textContent = (profile.nombre_usuario || profile.email).substring(0, 2).toUpperCase();
+            if (sideUserAv) {
+              if (profile.avatar_url) {
+                sideUserAv.innerHTML = '<img src="' + profile.avatar_url + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+                sideUserAv.style.background = 'transparent';
+                const composerAv = document.querySelector('.composer-top .av');
+                if (composerAv) {
+                  composerAv.innerHTML = '<img src="' + profile.avatar_url + '" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+                  composerAv.style.background = 'transparent';
+                }
+              } else {
+                sideUserAv.textContent = (profile.nombre_usuario || profile.email).substring(0, 2).toUpperCase();
+              }
+            }
             if (profile.pets) {
               myDogs = profile.pets.map((p, i) => {
                 const calculatedFollowers = globalInteractions.filter(int => int.tipo_interaccion === 'follow' && int.entidad_destino_id === p.nombre).length;
@@ -924,6 +1031,12 @@
       try {
         if (window.PawvlogAPI && window.PawvlogAPI.uploadImage) {
           const url = await window.PawvlogAPI.uploadImage(file);
+          const userId = localStorage.getItem('pawvlog_user_id');
+          if (userId && window.PawvlogAPI.updateUser) {
+            try {
+              await window.PawvlogAPI.updateUser(userId, { avatar_url: url });
+            } catch (apiErr) { }
+          }
           const avElements = document.querySelectorAll('.side-user .av, .composer-top .av');
           avElements.forEach(av => {
             av.innerHTML = `<img src="${url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
