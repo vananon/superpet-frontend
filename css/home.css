@@ -592,7 +592,6 @@ input[type=file] {
   display: none;
 }
 
-/* Comments Section */
 .comments-section {
   border-top: 1px solid var(--gray-lighter);
   padding: 16px;
@@ -733,6 +732,16 @@ input[type=file] {
 .btn-follow-post:hover {
   background: var(--primary);
   color: #fff;
+}
+
+.btn-outline {
+  background-color: var(--red);
+  padding: 9px 22px;
+  color: white;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  transition: transform .15s, opacity .15s;
 }
 
 .btn-follow-post:disabled {

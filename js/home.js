@@ -13,11 +13,12 @@
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('pawvlog_token');
-      window.location.href = 'pawvlog-landing.html';
+      window.location.href = 'index.html';
     });
   }
 
   let attachedPhoto = null;
+  let attachedFile = null;
   let selectedPets = [];
   let globalInteractions = [];
   let myDogs = [
@@ -44,6 +45,7 @@
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    attachedFile = file;
     const reader = new FileReader();
     reader.onload = (ev) => {
       attachedPhoto = ev.target.result;
@@ -56,6 +58,7 @@
 
   removePhoto.addEventListener('click', () => {
     attachedPhoto = null;
+    attachedFile = null;
     fileInput.value = '';
     photoPreview.style.display = 'none';
     updatePostBtn();
@@ -158,13 +161,29 @@
 
   function attachInteractions() {
     document.querySelectorAll('.like-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const i = +btn.dataset.i;
         const post = seedPosts[i];
-        post.liked = !post.liked;
-        post.likes += post.liked ? 1 : -1;
-        btn.classList.toggle('liked', post.liked);
-        btn.querySelector('span').textContent = post.likes;
+
+        if (post.liked) return;
+
+        btn.disabled = true;
+        try {
+          if (window.PawvlogAPI) {
+            const userId = localStorage.getItem('pawvlog_user_id') || 'local_user';
+            const newInteraction = await window.PawvlogAPI.likePost(post._id, userId);
+            if (newInteraction) {
+              globalInteractions.push(newInteraction);
+            }
+          }
+          post.liked = true;
+          post.likes += 1;
+          btn.classList.add('liked');
+          btn.querySelector('span').textContent = post.likes;
+        } catch (e) {
+        } finally {
+          btn.disabled = false;
+        }
       });
     });
     document.querySelectorAll('.save-btn').forEach(btn => {
@@ -321,7 +340,6 @@
             e.target.textContent = 'Dejando de seguir...';
             if (interactionId && interactionId !== 'null') {
               await window.PawvlogAPI.unfollowPet(interactionId);
-              // Optimistic Update
               globalInteractions = globalInteractions.filter(i => i._id !== interactionId);
               e.target.dataset.isfollowing = 'false';
               e.target.dataset.interactionid = 'null';
@@ -354,7 +372,6 @@
             const followerId = myPetObj ? myPetObj.id : localStorage.getItem('pawvlog_user_id');
             const newFollow = await window.PawvlogAPI.followPet(followerId, targetPet);
 
-            // Optimistic Update
             if (newFollow && newFollow._id) {
               globalInteractions.push(newFollow);
               e.target.dataset.interactionid = newFollow._id;
@@ -391,6 +408,13 @@
     postBtn.textContent = 'Publicando...';
 
     try {
+      let mediaUrl = null;
+      if (attachedFile && window.PawvlogAPI && window.PawvlogAPI.uploadImage) {
+        mediaUrl = await window.PawvlogAPI.uploadImage(attachedFile);
+      } else if (attachedPhoto) {
+        mediaUrl = attachedPhoto;
+      }
+
       if (window.PawvlogAPI) {
         const postData = {
           id_mascota: selectedPet.id,
@@ -399,9 +423,9 @@
             foto_mascota: '',
             usuario_handle: localStorage.getItem('pawvlog_user_id') || 'usuario_local'
           },
-          tipo: attachedPhoto ? 'foto' : 'texto',
+          tipo: mediaUrl ? 'foto' : 'texto',
           contenido_texto: text,
-          media_url: attachedPhoto ? [attachedPhoto] : []
+          media_url: mediaUrl ? [mediaUrl] : []
         };
 
         await window.PawvlogAPI.createPost(postData);
@@ -428,6 +452,7 @@
       postText.value = '';
       postText.style.height = 'auto';
       attachedPhoto = null;
+      attachedFile = null;
       fileInput.value = '';
       photoPreview.style.display = 'none';
       selectedPets = [];
@@ -456,12 +481,6 @@
   const settingsView = document.getElementById('settingsView');
 
   const allViews = [homeView, profileView, notificationsView, searchView, messagingView, settingsView];
-  const mockNotifications = [
-    { text: 'A <strong>Milo</strong> le gustó la foto de <strong>Yuna</strong>.', time: 'hace 5 min', icon: 'M', color: 'var(--pet-3)' },
-    { text: '<strong>Pepper</strong> comentó: ¡Qué lindo día para pasear!', time: 'hace 1 hora', icon: 'P', color: 'var(--pet-7)' },
-    { text: '<strong>Nube</strong> comenzó a seguir a tu manada.', time: 'hace 3 horas', icon: 'N', color: 'var(--pet-5)' },
-    { text: 'A <strong>Thea</strong> y 3 más les gustó tu post reciente.', time: 'ayer', icon: 'T', color: 'var(--pet-4)' }
-  ];
 
   const mockExplore = [
     { tag: '#friendly', count: '12.4k posts' },
@@ -722,21 +741,27 @@
             const sideUserSub = document.querySelector('.side-user .sub');
             const sideUserAv = document.querySelector('.side-user .av');
             if (sideUserName) sideUserName.textContent = profile.nombre_usuario || profile.email;
-            if (sideUserSub) sideUserSub.textContent = `@${profile.nombre_usuario || profile.email.split('@')[0]} · ${profile.pets ? profile.pets.length : 0} perros`;
             if (sideUserAv) sideUserAv.textContent = (profile.nombre_usuario || profile.email).substring(0, 2).toUpperCase();
-
             if (profile.pets) {
-              myDogs = profile.pets.map((p, i) => ({
-                id: p._id,
-                name: p.nombre,
-                breed: p.raza || 'Desconocida',
-                age: p.edad_meses || 0,
-                interests: p.intereses ? p.intereses.map(int => '#' + int).join(' ') : '',
-                color: petColors[i % petColors.length],
-                initials: p.nombre ? p.nombre.charAt(0).toUpperCase() : 'P',
-                followers: p.seguidores_count || 0,
-                bio: ''
-              }));
+              myDogs = profile.pets.map((p, i) => {
+                const calculatedFollowers = globalInteractions.filter(int => int.tipo_interaccion === 'follow' && int.entidad_destino_id === p.nombre).length;
+                return {
+                  id: p._id,
+                  name: p.nombre,
+                  breed: p.raza || 'Desconocida',
+                  age: p.edad_meses || 0,
+                  interests: p.intereses ? p.intereses.map(int => '#' + int).join(' ') : '',
+                  color: petColors[i % petColors.length],
+                  initials: p.nombre ? p.nombre.charAt(0).toUpperCase() : 'P',
+                  followers: calculatedFollowers > 0 ? calculatedFollowers : (p.seguidores_count || 0),
+                  bio: ''
+                };
+              });
+
+              const totalFollowers = myDogs.reduce((sum, dog) => sum + dog.followers, 0);
+              if (sideUserSub) sideUserSub.textContent = `@${profile.nombre_usuario || profile.email.split('@')[0]} · ${profile.pets.length} perros · ${totalFollowers} seguidores`;
+            } else {
+              if (sideUserSub) sideUserSub.textContent = `@${profile.nombre_usuario || profile.email.split('@')[0]} · 0 perros · 0 seguidores`;
             }
           }
         }
@@ -753,17 +778,50 @@
 
   function renderNotifications() {
     const notifList = document.getElementById('notificationsList');
-    if (!notifList.innerHTML) {
-      notifList.innerHTML = mockNotifications.map(n => `
+
+    let myDogNames = myDogs.map(d => d.name);
+    let myPostIds = seedPosts.filter(p => myDogNames.includes(p.name)).map(p => p._id);
+
+    let relevantNotifs = globalInteractions.filter(i => {
+      if (i.tipo_interaccion === 'follow' && myDogNames.includes(i.entidad_destino_id)) return true;
+      if (i.tipo_interaccion === 'like' && myPostIds.includes(i.entidad_destino_id)) return true;
+      return false;
+    });
+
+    relevantNotifs.reverse();
+
+    if (relevantNotifs.length === 0) {
+      notifList.innerHTML = '<div style="padding: 20px; color: var(--ink-soft); text-align: center;">No tienes notificaciones aún.</div>';
+      return;
+    }
+
+    notifList.innerHTML = relevantNotifs.map(n => {
+      let text = '';
+      let icon = 'N';
+      let color = 'var(--ink)';
+
+      if (n.tipo_interaccion === 'follow') {
+        text = `<strong>Un usuario</strong> comenzó a seguir a <strong>${n.entidad_destino_id}</strong>.`;
+        icon = 'F';
+        color = 'var(--primary)';
+      } else if (n.tipo_interaccion === 'like') {
+        const post = seedPosts.find(p => p._id === n.entidad_destino_id);
+        const postOwner = post ? post.name : 'tu manada';
+        text = `A <strong>alguien</strong> le gustó la publicación de <strong>${postOwner}</strong>.`;
+        icon = 'L';
+        color = 'var(--red)';
+      }
+
+      return `
         <div class="notification-item">
-          <div class="notif-icon" style="background:${n.color}">${n.icon}</div>
+          <div class="notif-icon" style="background:${color}; color:white;">${icon}</div>
           <div class="notif-content">
-            <div>${n.text}</div>
-            <div class="notif-time">${n.time}</div>
+            <div>${text}</div>
+            <div class="notif-time">${n.fecha_interaccion ? new Date(n.fecha_interaccion).toLocaleDateString() : 'hace poco'}</div>
           </div>
         </div>
-      `).join('');
-    }
+      `;
+    }).join('');
   }
 
   function renderSearch() {
@@ -847,4 +905,40 @@
   });
 
   renderAll();
+
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const editProfilePicInput = document.getElementById('editProfilePicInput');
+
+  if (editProfileBtn && editProfilePicInput) {
+    editProfileBtn.addEventListener('click', () => {
+      editProfilePicInput.click();
+    });
+
+    editProfilePicInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      editProfileBtn.disabled = true;
+      editProfileBtn.textContent = 'Subiendo...';
+
+      try {
+        if (window.PawvlogAPI && window.PawvlogAPI.uploadImage) {
+          const url = await window.PawvlogAPI.uploadImage(file);
+          const avElements = document.querySelectorAll('.side-user .av, .composer-top .av');
+          avElements.forEach(av => {
+            av.innerHTML = `<img src="${url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            av.style.background = 'transparent';
+          });
+          editProfileBtn.textContent = '¡Foto actualizada!';
+          setTimeout(() => editProfileBtn.textContent = 'Editar Perfil', 2000);
+        }
+      } catch (err) {
+        editProfileBtn.textContent = 'Error al subir';
+        setTimeout(() => editProfileBtn.textContent = 'Editar Perfil', 2000);
+      } finally {
+        editProfileBtn.disabled = false;
+        editProfilePicInput.value = '';
+      }
+    });
+  }
 })();

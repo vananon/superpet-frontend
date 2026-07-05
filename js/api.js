@@ -121,6 +121,25 @@ async function unfollowPet(interactionId) {
   });
 }
 
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error.message || 'Error en subida de imagen');
+  }
+
+  const data = await response.json();
+  return data.secure_url;
+}
+
 window.PawvlogAPI = {
   checkUserExists,
   loginUser,
@@ -135,5 +154,6 @@ window.PawvlogAPI = {
   followPet,
   getInteractions,
   unfollowPet,
+  uploadImage,
   API_BASE_URL
 };
